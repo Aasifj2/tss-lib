@@ -10,11 +10,11 @@ import (
 	"crypto/elliptic"
 	"math/big"
 
-	"github.com/bnb-chain/tss-lib/common"
-	"github.com/bnb-chain/tss-lib/crypto"
-	cmt "github.com/bnb-chain/tss-lib/crypto/commitments"
-	"github.com/bnb-chain/tss-lib/crypto/schnorr"
-	"github.com/bnb-chain/tss-lib/tss"
+	"github.com/Aasifj2/tss-lib/common"
+	"github.com/Aasifj2/tss-lib/crypto"
+	cmt "github.com/Aasifj2/tss-lib/crypto/commitments"
+	"github.com/Aasifj2/tss-lib/crypto/schnorr"
+	"github.com/Aasifj2/tss-lib/tss"
 )
 
 // These messages were generated from Protocol Buffers definitions into eddsa-signing.pb.go

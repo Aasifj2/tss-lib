@@ -1,4 +1,4 @@
-MODULE = github.com/bnb-chain/tss-lib
+MODULE = github.com/Aasifj2/tss-lib
 PACKAGES = $(shell go list ./... | grep -v '/vendor/')
 
 all: protob test

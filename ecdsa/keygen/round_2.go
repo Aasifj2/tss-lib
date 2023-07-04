@@ -11,8 +11,8 @@ import (
 	"errors"
 	"sync"
 
-	"github.com/bnb-chain/tss-lib/common"
-	"github.com/bnb-chain/tss-lib/tss"
+	"github.com/Aasifj2/tss-lib/common"
+	"github.com/Aasifj2/tss-lib/tss"
 )
 
 const (

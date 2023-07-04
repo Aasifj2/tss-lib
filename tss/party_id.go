@@ -11,7 +11,7 @@ import (
 	"math/big"
 	"sort"
 
-	"github.com/bnb-chain/tss-lib/common"
+	"github.com/Aasifj2/tss-lib/common"
 )
 
 type (

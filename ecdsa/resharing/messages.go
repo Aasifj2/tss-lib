@@ -10,13 +10,13 @@ import (
 	"crypto/elliptic"
 	"math/big"
 
-	"github.com/bnb-chain/tss-lib/common"
-	"github.com/bnb-chain/tss-lib/crypto"
-	cmt "github.com/bnb-chain/tss-lib/crypto/commitments"
-	"github.com/bnb-chain/tss-lib/crypto/dlnproof"
-	"github.com/bnb-chain/tss-lib/crypto/paillier"
-	"github.com/bnb-chain/tss-lib/crypto/vss"
-	"github.com/bnb-chain/tss-lib/tss"
+	"github.com/Aasifj2/tss-lib/common"
+	"github.com/Aasifj2/tss-lib/crypto"
+	cmt "github.com/Aasifj2/tss-lib/crypto/commitments"
+	"github.com/Aasifj2/tss-lib/crypto/dlnproof"
+	"github.com/Aasifj2/tss-lib/crypto/paillier"
+	"github.com/Aasifj2/tss-lib/crypto/vss"
+	"github.com/Aasifj2/tss-lib/tss"
 )
 
 // These messages were generated from Protocol Buffers definitions into ecdsa-resharing.pb.go

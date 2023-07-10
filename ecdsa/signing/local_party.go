@@ -86,6 +86,11 @@ type (
 		bigAi,
 		bigVi *crypto.ECPoint
 		DPower cmt.HashDeCommitment
+		//additional for part signature verification
+		yi_x *big.Int
+		yi_y *big.Int
+		qi_x *big.Int
+		qi_y *big.Int
 
 		// round 7
 		Ui,

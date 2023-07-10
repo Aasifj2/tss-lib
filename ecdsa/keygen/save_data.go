@@ -47,6 +47,9 @@ type (
 
 		// used for test assertions (may be discarded)
 		ECDSAPub *crypto.ECPoint // y
+
+		//Threshold
+		T int
 	}
 )
 

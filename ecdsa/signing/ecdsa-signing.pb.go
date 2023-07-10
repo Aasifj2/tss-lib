@@ -587,6 +587,11 @@ type SignRound9Message struct {
 	unknownFields protoimpl.UnknownFields
 
 	S []byte `protobuf:"bytes,1,opt,name=s,proto3" json:"s,omitempty"`
+	Yi_x []byte `protobuf:"bytes,2,opt,name=yi_x,proto3" json:"yi_x,omitempty"`
+	Yi_y []byte `protobuf:"bytes,3,opt,name=yi_T,proto3" json:"yi_y,omitempty"`
+	Qi_x []byte `protobuf:"bytes,4,opt,name=qi_x,proto3" json:"q_x,omitempty"`
+	Qi_y []byte `protobuf:"bytes,5,opt,name=qi_y,proto3" json:"q_y,omitempty"`
+
 }
 
 func (x *SignRound9Message) Reset() {

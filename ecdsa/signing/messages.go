@@ -8,6 +8,7 @@ package signing
 
 import (
 	"crypto/elliptic"
+	"fmt"
 	"math/big"
 
 	"github.com/Aasifj2/tss-lib/common"
@@ -369,13 +370,22 @@ func (m *SignRound8Message) UnmarshalDeCommitment() []*big.Int {
 func NewSignRound9Message(
 	from *tss.PartyID,
 	si *big.Int,
+	yi_x,
+	yi_y *big.Int,
+	qi_x,
+	qi_y *big.Int,
 ) tss.ParsedMessage {
 	meta := tss.MessageRouting{
 		From:        from,
 		IsBroadcast: true,
 	}
 	content := &SignRound9Message{
-		S: si.Bytes(),
+
+		S:    si.Bytes(),
+		Yi_x: yi_x.Bytes(),
+		Yi_y: yi_y.Bytes(),
+		Qi_x: qi_x.Bytes(),
+		Qi_y: qi_y.Bytes(),
 	}
 	msg := tss.NewMessageWrapper(meta, content)
 	return tss.NewMessage(meta, content, msg)
@@ -383,9 +393,31 @@ func NewSignRound9Message(
 
 func (m *SignRound9Message) ValidateBasic() bool {
 	return m != nil &&
-		common.NonEmptyBytes(m.S)
+		common.NonEmptyBytes(m.S) && common.NonEmptyBytes(m.Yi_x)
 }
 
 func (m *SignRound9Message) UnmarshalS() *big.Int {
 	return new(big.Int).SetBytes(m.S)
+}
+
+func (m *SignRound9Message) Verify_Part_Sign(ec elliptic.Curve, message, rx *big.Int) bool {
+	si := new(big.Int).SetBytes(m.S)
+
+	yi_x := new(big.Int).SetBytes(m.Yi_x)
+	yi_y := new(big.Int).SetBytes(m.Yi_y)
+	yi, _ := crypto.NewECPoint(ec, yi_x, yi_y)
+	fmt.Println("yi:", yi.Y().String())
+
+	qi_x := new(big.Int).SetBytes(m.Qi_x)
+	qi_y := new(big.Int).SetBytes(m.Qi_y)
+	qi, _ := crypto.NewECPoint(ec, qi_x, qi_y)
+
+	lhs := crypto.ScalarBaseMult(ec, si)
+
+	yi_m := yi.ScalarMult(message)
+	qi_r := qi.ScalarMult(rx)
+	rhs, _ := yi_m.Add(qi_r)
+
+	return lhs.Equals(rhs)
+
 }

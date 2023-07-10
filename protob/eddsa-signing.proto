@@ -30,4 +30,5 @@ message SignRound2Message {
  */
 message SignRound3Message {
     bytes s = 1;
+	
 }

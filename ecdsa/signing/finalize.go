@@ -13,6 +13,7 @@ import (
 	"math/big"
 
 	"github.com/Aasifj2/tss-lib/common"
+	"github.com/Aasifj2/tss-lib/crypto"
 	"github.com/Aasifj2/tss-lib/tss"
 )
 
@@ -27,13 +28,45 @@ func (round *finalization) Start() *tss.Error {
 	sumS := round.temp.si
 	modN := common.ModInt(round.Params().EC().Params().N)
 
+	N_signs := 0
 	for j := range round.Parties().IDs() {
 		round.ok[j] = true
 		if j == round.PartyID().Index {
 			continue
 		}
+
 		r9msg := round.temp.signRound9Messages[j].Content().(*SignRound9Message)
+		// verified := r9msg.Verify_Part_Sign(round.EC(), round.temp.m, round.temp.rx)
+
+		si := new(big.Int).SetBytes(r9msg.S)
+
+		fmt.Println("r9msg:", r9msg.S)
+		yi_x := new(big.Int).SetBytes(r9msg.Yi_x)
+		yi_y := new(big.Int).SetBytes(r9msg.Yi_y)
+		yi, _ := crypto.NewECPoint(round.EC(), yi_x, yi_y)
+		fmt.Println("yi:", yi.Y().String())
+
+		qi_x := new(big.Int).SetBytes(r9msg.Qi_x)
+		qi_y := new(big.Int).SetBytes(r9msg.Qi_y)
+		qi, _ := crypto.NewECPoint(round.EC(), qi_x, qi_y)
+
+		lhs := crypto.ScalarBaseMult(round.EC(), si)
+
+		yi_m := yi.ScalarMult(round.temp.m)
+		qi_r := qi.ScalarMult(round.temp.rx)
+		rhs, _ := yi_m.Add(qi_r)
+
+		verified := lhs.Equals(rhs)
+
+		if !verified {
+
+			continue
+		}
+		N_signs += 1
 		sumS = modN.Add(sumS, r9msg.UnmarshalS())
+	}
+	if N_signs < round.Threshold() {
+		round.WrapError(fmt.Errorf("not enough valid signatures"))
 	}
 
 	recid := 0
@@ -100,4 +133,19 @@ func padToLengthBytesInPlace(src []byte, length int) []byte {
 		}
 	}
 	return src
+}
+
+func HashToInt(hash []byte, N *big.Int) *big.Int {
+	orderBits := N.BitLen()
+	orderBytes := (orderBits + 7) / 8
+	if len(hash) > orderBytes {
+		hash = hash[:orderBytes]
+	}
+
+	ret := new(big.Int).SetBytes(hash)
+	excess := len(hash)*8 - orderBits
+	if excess > 0 {
+		ret.Rsh(ret, uint(excess))
+	}
+	return ret
 }

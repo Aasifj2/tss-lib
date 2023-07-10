@@ -8,6 +8,8 @@ package signing
 
 import (
 	"errors"
+	"fmt"
+	"math/big"
 
 	"github.com/Aasifj2/tss-lib/crypto/commitments"
 	"github.com/Aasifj2/tss-lib/tss"
@@ -44,7 +46,11 @@ func (round *round9) Start() *tss.Error {
 		return round.WrapError(errors.New("U doesn't equal T"), round.PartyID())
 	}
 
-	r9msg := NewSignRound9Message(round.PartyID(), round.temp.si)
+	fmt.Println("I>>>NSIDE ROUND 9:", round.temp.yi_x)
+
+	r9msg := NewSignRound9Message(round.PartyID(), round.temp.si, round.temp.yi_x, round.temp.yi_y, round.temp.qi_x, round.temp.qi_y)
+	fmt.Println("I>>>NSIDE ROUND 9:", new(big.Int).SetBytes(r9msg.Content().(*SignRound9Message).Yi_x))
+
 	round.temp.signRound9Messages[round.PartyID().Index] = r9msg
 	round.out <- r9msg
 	return nil

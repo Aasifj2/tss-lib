@@ -63,6 +63,21 @@ func (round *round5) Start() *tss.Error {
 	ry := R.Y()
 	si := modN.Add(modN.Mul(round.temp.m, round.temp.k), modN.Mul(rx, round.temp.sigma))
 
+	//for part signature verification
+	yi := crypto.ScalarBaseMult(round.Params().EC(), round.temp.k)
+	yi_x := yi.X()
+	yi_y := yi.Y()
+
+	qi := crypto.ScalarBaseMult(round.Params().EC(), round.temp.sigma)
+	qi_x := qi.X()
+	qi_y := qi.Y()
+
+	round.temp.yi_x = yi_x
+	round.temp.yi_y = yi_y
+
+	round.temp.qi_x = qi_x
+	round.temp.qi_y = qi_y
+
 	// clear temp.w and temp.k from memory, lint ignore
 	round.temp.w = zero
 	round.temp.k = zero

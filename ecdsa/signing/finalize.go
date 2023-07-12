@@ -13,7 +13,6 @@ import (
 	"math/big"
 
 	"github.com/Aasifj2/tss-lib/common"
-	"github.com/Aasifj2/tss-lib/crypto"
 	"github.com/Aasifj2/tss-lib/tss"
 )
 
@@ -36,31 +35,12 @@ func (round *finalization) Start() *tss.Error {
 		}
 
 		r9msg := round.temp.signRound9Messages[j].Content().(*SignRound9Message)
-		// verified := r9msg.Verify_Part_Sign(round.EC(), round.temp.m, round.temp.rx)
-
-		si := new(big.Int).SetBytes(r9msg.S)
-
-		fmt.Println("r9msg:", r9msg.S)
-		yi_x := new(big.Int).SetBytes(r9msg.Yi_x)
-		yi_y := new(big.Int).SetBytes(r9msg.Yi_y)
-		yi, _ := crypto.NewECPoint(round.EC(), yi_x, yi_y)
-		fmt.Println("yi:", yi.Y().String())
-
-		qi_x := new(big.Int).SetBytes(r9msg.Qi_x)
-		qi_y := new(big.Int).SetBytes(r9msg.Qi_y)
-		qi, _ := crypto.NewECPoint(round.EC(), qi_x, qi_y)
-
-		lhs := crypto.ScalarBaseMult(round.EC(), si)
-
-		yi_m := yi.ScalarMult(round.temp.m)
-		qi_r := qi.ScalarMult(round.temp.rx)
-		rhs, _ := yi_m.Add(qi_r)
-
-		verified := lhs.Equals(rhs)
+		verified := r9msg.Verify_Part_Sign(round.EC(), round.temp.m, round.temp.rx)
 
 		if !verified {
-
+			fmt.Printf("party %v failed to verify part %v's signature\n", round.PartyID(), j)
 			continue
+
 		}
 		N_signs += 1
 		sumS = modN.Add(sumS, r9msg.UnmarshalS())

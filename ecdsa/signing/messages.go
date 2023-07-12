@@ -381,11 +381,11 @@ func NewSignRound9Message(
 	}
 	content := &SignRound9Message{
 
-		S:    si.Bytes(),
-		Yi_x: yi_x.Bytes(),
-		Yi_y: yi_y.Bytes(),
-		Qi_x: qi_x.Bytes(),
-		Qi_y: qi_y.Bytes(),
+		S:   si.Bytes(),
+		YiX: yi_x.Bytes(),
+		YiY: yi_y.Bytes(),
+		QiX: qi_x.Bytes(),
+		QiY: qi_y.Bytes(),
 	}
 	msg := tss.NewMessageWrapper(meta, content)
 	return tss.NewMessage(meta, content, msg)
@@ -393,7 +393,7 @@ func NewSignRound9Message(
 
 func (m *SignRound9Message) ValidateBasic() bool {
 	return m != nil &&
-		common.NonEmptyBytes(m.S) && common.NonEmptyBytes(m.Yi_x)
+		common.NonEmptyBytes(m.S) && common.NonEmptyBytes(m.YiX)
 }
 
 func (m *SignRound9Message) UnmarshalS() *big.Int {
@@ -403,13 +403,13 @@ func (m *SignRound9Message) UnmarshalS() *big.Int {
 func (m *SignRound9Message) Verify_Part_Sign(ec elliptic.Curve, message, rx *big.Int) bool {
 	si := new(big.Int).SetBytes(m.S)
 
-	yi_x := new(big.Int).SetBytes(m.Yi_x)
-	yi_y := new(big.Int).SetBytes(m.Yi_y)
+	yi_x := new(big.Int).SetBytes(m.YiX)
+	yi_y := new(big.Int).SetBytes(m.YiY)
 	yi, _ := crypto.NewECPoint(ec, yi_x, yi_y)
 	fmt.Println("yi:", yi.Y().String())
 
-	qi_x := new(big.Int).SetBytes(m.Qi_x)
-	qi_y := new(big.Int).SetBytes(m.Qi_y)
+	qi_x := new(big.Int).SetBytes(m.QiX)
+	qi_y := new(big.Int).SetBytes(m.QiY)
 	qi, _ := crypto.NewECPoint(ec, qi_x, qi_y)
 
 	lhs := crypto.ScalarBaseMult(ec, si)
@@ -417,6 +417,7 @@ func (m *SignRound9Message) Verify_Part_Sign(ec elliptic.Curve, message, rx *big
 	yi_m := yi.ScalarMult(message)
 	qi_r := qi.ScalarMult(rx)
 	rhs, _ := yi_m.Add(qi_r)
+	fmt.Println(lhs.Equals(rhs))
 
 	return lhs.Equals(rhs)
 

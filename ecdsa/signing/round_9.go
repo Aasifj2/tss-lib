@@ -49,7 +49,7 @@ func (round *round9) Start() *tss.Error {
 	fmt.Println("I>>>NSIDE ROUND 9:", round.temp.yi_x)
 
 	r9msg := NewSignRound9Message(round.PartyID(), round.temp.si, round.temp.yi_x, round.temp.yi_y, round.temp.qi_x, round.temp.qi_y)
-	fmt.Println("I>>>NSIDE ROUND 9:", new(big.Int).SetBytes(r9msg.Content().(*SignRound9Message).Yi_x))
+	fmt.Println("I>>>NSIDE ROUND 9:", new(big.Int).SetBytes(r9msg.Content().(*SignRound9Message).YiY))
 
 	round.temp.signRound9Messages[round.PartyID().Index] = r9msg
 	round.out <- r9msg
